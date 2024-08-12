@@ -53,10 +53,63 @@ async function run() {
       res.send(result);
     });
 
+    // Get Message Detail (Get single message)
+    app.get("/message-detail/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await messageCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Update Message Status
+    app.patch("/message/:id", async (req, res) => {
+      const id = req.params.id;
+      const doc = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: doc,
+      };
+      const result = await messageCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      console.log(result);
+      res.send(result);
+    });
+
     // Get All Skills
     app.get("/add-skill", async (req, res) => {
       const cursor = await skillCollection.find({}).toArray();
       res.send(cursor);
+    });
+
+    // Get a Single Skill Data
+    app.get("/update-skill/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await skillCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Update Skill
+    app.patch("/update-skill/:id", async (req, res) => {
+      const id = req.params.id;
+      const doc = req.body;
+      // console.log(doc)
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: doc,
+      };
+      const result = await skillCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      console.log(result);
+      res.send(result);
     });
 
     // Post a skill
@@ -82,12 +135,66 @@ async function run() {
       res.send(result);
     });
 
+    // Get All Services
+    app.get("/service", async (req, res) => {
+      const cursor = await serviceCollection.find({}).toArray();
+      res.send(cursor);
+    });
+
+    // Get Single Service
+    app.get("/update-service/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await serviceCollection.findOne(query);
+      res.send(result);
+    });
+
+    // Update a service
+    app.patch("/update-service/:id", async(req,res) => {
+      const id = req.params.id;
+      const doc = req.body;
+      // console.log(doc)
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: doc,
+      };
+      const result = await serviceCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    })
+
+    // Delete Service
+    app.delete("/service/:id", async(req,res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await serviceCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // Add a Portfolio
     app.post("/add-portfolio", async (req, res) => {
       const data = req.body;
       const result = await portfolioCollection.insertOne(data);
       res.send(result);
     });
+
+    // Get All Portfolios
+    app.get("/portfolio", async (req, res) => {
+      const cursor = await portfolioCollection.find({}).toArray();
+      res.send(cursor);
+    });
+
+    // Get Single Portfolio
+    app.get("/portfolio-detail/:id", async(req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await portfolioCollection.findOne(query);
+      res.send(result);
+    })
 
     // Upsert Contact
     app.post("/contact", async (req, res) => {
@@ -98,8 +205,12 @@ async function run() {
       const updateDoc = {
         $set: data,
       };
-      const result = await contactCollection.updateOne(filter, updateDoc, options);
-      res.send(result)
+      const result = await contactCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
